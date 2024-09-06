@@ -1,0 +1,77 @@
+name_map = {  # Dictionary mapping filenames to names
+    "1.jpg": "Robin",
+    "2.jpg": "Anas",
+    "3.jpg": "Mike",
+    "4.jpg": "Robert",
+    "5.jpg": "Oguzhan",
+    "6.jpg": "Danny",
+}
+
+def configure_logger(filename='log.txt', level=logging.INFO):
+  """Configures the logger for face recognition events.
+
+  Args:
+    filename: The filename for log storage (default: 'log.txt').
+    level: The logging level (default: logging.INFO).
+  """
+  # Create a logger for this module
+  logger = logging.getLogger(__name__)
+  logger.setLevel(level)
+
+  # Create a file handler for writing logs to a file
+  file_handler = logging.FileHandler(filename)
+  formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+  file_handler.setFormatter(formatter)
+  logger.addHandler(file_handler)
+
+  # Add a stream handler (optional, for console output)
+  # stream_handler = logging.StreamHandler()
+  # stream_handler.setFormatter(formatter)
+  # Uncomment the line above and the next to enable console output
+  # logger.addHandler(stream_handler)
+
+def log_facerec(message, level=logging.INFO):
+  """Logs a message related to face recognition, including timestamp and name (if applicable).
+
+  Args:
+    message: The message to log.
+    level: The logging level (e.g., logging.DEBUG, logging.INFO, logging.WARNING).
+  """
+
+  # Get current timestamp
+  timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')
+
+  # Log the message with timestamp
+  logger.log(level, f"{timestamp} - {message}")
+
+  # Check for recognized faces named 1.jpg to 8.jpg
+  if message.startswith("Face recognized:"):
+    recognized_face = message.split(": ")[1]  # Extract recognized face name
+
+    # Check for filenames and retrieve name from the dictionary
+    if recognized_face in name_map:
+      name = name_map[recognized_face]
+      logger.info(f"{timestamp} - Recognized: {name} ({recognized_face})")  # Log specific recognition with name
+    else:
+      logger.info(f"{timestamp} - Recognized unknown face: {recognized_face}")  # Log unknown faces
+
+# Example usage
+# Configure the logger before using the log_facerec function
+configure_logger()
+
+log_facerec("Starting face recognition process.")
+
+
+
+
+
+
+
+def process_recognition(message, timestamp, name_map, logger):
+  """Processes face recognition message and logs details."""
+  name = name_map.get(message.split(": ")[1], message.split(": ")[1])  # Extract and potentially map name
+  logger.info(f"{timestamp} - Recognized: {name} ({message.split(': ')[1]})") if name in name_map else logger.info(f"{timestamp} - Recognized unknown face: {message.split(': ')[1]}")
+
+
+
+https://prod.liveshare.vsengsaas.visualstudio.com/join?59437145100C22A3FDCC640CEA900C849932
